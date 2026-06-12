@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.org/utsr-toolmeta/utsr_record.schema.json",
+  "$id": "https://raw.githubusercontent.com/Tang-Yiru/UTSR-ToolMeta-Dataset/main/schema/utsr_record.schema.json",
   "title": "UTSR-ToolMeta Record",
   "type": "object",
   "required": [
@@ -208,4 +208,3 @@
     }
   }
 }
-

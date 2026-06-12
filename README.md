@@ -1,5 +1,7 @@
 # UTSR-ToolMeta Dataset
 
+Status: internal research draft, version 0.1.0. This repository is currently prepared for research-group discussion. Citation metadata, final paper information, and data licensing notes may be revised before public archival release.
+
 UTSR-ToolMeta is a dataset of LLM-Agent tool declarations normalized into the Unified Tool Semantic Representation (UTSR). It is designed for research on tool metadata modeling, tool retrieval, tool selection, invocation planning, parameter generation, and security analysis of tool-using agents.
 
 The dataset unifies tool descriptions from multiple source families, including MCP tool catalogs, OpenAPI operations, framework-integrated tools, tool-use benchmarks, and function-calling datasets. Each record contains a normalized UTSR object plus dataset metadata, source metadata, functional profiling fields, and provenance information.
@@ -111,9 +113,8 @@ scripts/    Validation and summarization utilities.
 
 ## Citation
 
-If you use this dataset, please cite the accompanying paper and this repository. A `CITATION.cff` file is provided for GitHub citation metadata.
+For the current internal draft, cite this repository. A final paper citation will be added when publication metadata is available. A `CITATION.cff` file is provided for GitHub citation metadata.
 
 ## Notice
 
-This dataset contains normalized tool declaration metadata derived from public or research-oriented sources. It does not include tool backend code or private execution credentials. Users are responsible for complying with applicable upstream licenses and terms of use. See [`DATA_LICENSE.md`](DATA_LICENSE.md) and [`NOTICE.md`](NOTICE.md).
-
+This dataset contains normalized tool declaration metadata derived from public or research-oriented sources. It does not include raw construction files, tool backend code, private user data, or private execution credentials. Users are responsible for complying with applicable upstream licenses and terms of use. See [`DATA_LICENSE.md`](DATA_LICENSE.md) and [`NOTICE.md`](NOTICE.md).

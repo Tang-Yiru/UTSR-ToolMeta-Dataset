@@ -1,4 +1,10 @@
-MIT License
+# Code and Documentation License
+
+The scripts and documentation in this repository are licensed under the MIT License below.
+
+The dataset records in `data/` contain normalized metadata derived from upstream public or research-oriented sources and are governed by `DATA_LICENSE.md` plus applicable upstream source terms.
+
+## MIT License
 
 Copyright (c) 2026 UTSR-ToolMeta contributors
 
@@ -19,4 +25,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
