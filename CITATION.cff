@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+title: UTSR-ToolMeta Dataset
+message: "If you use UTSR-ToolMeta, please cite the accompanying paper and this dataset repository."
+type: dataset
+authors:
+  - family-names: TBD
+    given-names: TBD
+repository-code: "https://github.com/TBD/UTSR-ToolMeta-Dataset"
+abstract: "UTSR-ToolMeta is a dataset of LLM-Agent tool declarations normalized into the Unified Tool Semantic Representation for tool metadata modeling and security research."
+keywords:
+  - LLM-Agent
+  - tool use
+  - tool metadata
+  - UTSR
+  - security
+license: MIT
+version: 0.1.0
+date-released: 2026-06-12
+
