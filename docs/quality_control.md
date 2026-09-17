@@ -1,38 +1,7 @@
-# Quality Control
+# Data Quality
 
-The construction pipeline uses a quality gate to separate hard-invalid records from valid tool-semantic records.
+The public main set contains 7,593 valid declaration records. The inherited `high_confidence` subset reflects declaration-quality screening, not measured functional-profile accuracy or verified executable behavior.
 
-## Quality Decisions
+All current records carry ten-field derived functional profiles. Rule-based pre-annotation and AI-assisted per-record semantic review were used. Labels are not human gold. Missing evidence remains unknown; sixteen known parsing-gap records retain abstaining profiles.
 
-| Decision | Meaning | Included in `release_valid` | Included in `high_confidence` |
-|---|---|---:|---:|
-| `keep` | Strong record with no hard defects or major review warnings. | yes | yes |
-| `review` | Valid tool-semantic record with minor quality weaknesses. | yes | no |
-| `exclude` | Hard-invalid or low-value record. | no | no |
-
-## Exclusion Criteria
-
-Records may be excluded for reasons such as:
-
-- test, mock, dummy, sample, or simulator records;
-- low-value API validation or ping-like endpoints;
-- missing core semantics, such as missing name or unusably short description;
-- non-tool-like names.
-
-## Review Criteria
-
-Records may be marked for review when they are still valid but imperfect:
-
-- missing or empty parameter list;
-- incomplete parameter descriptions;
-- very long descriptions;
-- benchmark or API records that are useful for analysis but differ from runtime tools;
-- generic task intent;
-- operation records without explicit schema.
-
-## Release Policy
-
-`release_valid` removes only `exclude` records. It retains `keep` and `review` because both still contain usable tool semantics. `high_confidence` contains only `keep` and is intended for precision-sensitive experiments.
-
-The quality gate is not part of the public record schema for the three release subsets. It is documented here as a construction and audit mechanism.
-
+Record-level schemas validate data shape. They do not establish the correctness of every input schema, label, or backend binding. Use the version-local SHA-256 manifest to verify distribution integrity, and independently verify actual tools before execution.

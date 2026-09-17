@@ -1,120 +1,60 @@
 # UTSR-ToolMeta Dataset
 
-Status: internal research draft, version 0.1.0. This repository is currently prepared for research-group discussion. Citation metadata, final paper information, and data licensing notes may be revised before public archival release.
+**Current version: v0.2.** UTSR-ToolMeta represents heterogeneous LLM-agent tool declarations in a Unified Tool Semantic Representation (UTSR).
 
-UTSR-ToolMeta is a dataset of LLM-Agent tool declarations normalized into the Unified Tool Semantic Representation (UTSR). It is designed for research on tool metadata modeling, tool retrieval, tool selection, invocation planning, parameter generation, and security analysis of tool-using agents.
-
-The dataset unifies tool descriptions from multiple source families, including MCP tool catalogs, OpenAPI operations, framework-integrated tools, tool-use benchmarks, and function-calling datasets. Each record contains a normalized UTSR object plus dataset metadata, source metadata, functional profiling fields, and provenance information.
-
-## Dataset Files
+## Dataset
 
 | File | Records | Description |
 |---|---:|---|
-| `data/utsr_records.release_valid.jsonl` | 7,593 | Main release set after removing hard-invalid records. |
-| `data/utsr_records.high_confidence.jsonl` | 4,408 | High-confidence subset containing only records that passed all quality gates. |
-| `data/utsr_records.core_balanced.jsonl` | 2,000 | Balanced core subset sampled from `release_valid`, with 400 records per source family. |
+| [release_valid](releases/v0.2/data/utsr_records.release_valid.jsonl) | 7,593 | Full valid dataset. |
+| [high_confidence](releases/v0.2/data/utsr_records.high_confidence.jsonl) | 4,408 | Subset inherited from declaration-quality screening. |
+| [core_balanced](releases/v0.2/data/utsr_records.core_balanced.jsonl) | 2,000 | Balanced subset with 400 records per source family. |
 
-The full construction pipeline produced 7,697 parsed candidate records. A quality gate was applied to label records as `keep`, `review`, or `exclude`. The public release set removes 104 `exclude` records while retaining `keep` and `review` records as valid tool-semantic samples.
+The subsets overlap; do not concatenate them as independent samples. Sources include MCP declarations, OpenAPI operations, framework-integrated tools, tool benchmarks, and function-calling datasets. See [source overview](docs/source_overview.md).
 
-## Source Families
-
-The main release set covers five source families:
-
-| Source family | Description |
-|---|---|
-| `mcp` | Tool declarations exposed by MCP servers or MCP tool catalogs. |
-| `openapi` | OpenAPI operations that can be converted into agent-callable tools. |
-| `framework_tool` | Tools integrated in agent frameworks or tool libraries. |
-| `tool_benchmark` | Tool-use benchmark records with tool or API operation descriptions. |
-| `function_calling_dataset` | Function-calling datasets that contain model-visible function declarations. |
-
-## Record Format
-
-Each JSONL line is one UTSR-ToolMeta record:
-
-```json
-{
-  "record_id": "...",
-  "dataset_meta": { "...": "..." },
-  "source_meta": { "...": "..." },
-  "function_profile": { "...": "..." },
-  "utsr": {
-    "source": { "...": "..." },
-    "identity": { "...": "..." },
-    "capability": { "...": "..." },
-    "interface": { "...": "..." },
-    "binding": { "...": "..." }
-  },
-  "provenance": { "...": "..." }
-}
-```
-
-See [`schema/field_dictionary.md`](schema/field_dictionary.md) for field definitions and [`schema/utsr_record.schema.json`](schema/utsr_record.schema.json) for the machine-readable schema.
+Each record contains a stable `record_id`, `dataset_meta`, `source_meta`, `function_profile`, `utsr`, and a source descriptor reference under `provenance`. The UTSR object contains source information, tool identity, capability text, input/output interfaces, and binding references. Missing source information remains missing. Tool implementation code and service credentials are not distributed.
 
 ## Functional Profiles
 
-In addition to UTSR fields, each record includes a `function_profile` used for dataset analysis and experimental environment construction:
+Profiles contain exactly ten semantic fields:
 
-- `domain`: coarse functional domain.
-- `subdomain`: fine-grained functional category.
-- `function_type`: operation type, such as retrieve, search/list, create/write, modify, or delete/destructive.
-- `task_intent`: concise natural-language intent summary.
-- `semantic_tags`: lightweight tags for semantic grouping.
+`primary_domain`, `primary_subdomain`, `secondary_domains`, `supported_actions`, `primary_action`, `action_mode`, `effect_class`, `resource_object`, `cardinality`, and structured `task_intent`.
 
-These fields are intended for grouping, filtering, retrieval, and competition-pool construction. They are not assumed to be visible to the tested agent.
+Functional profiles are derived labels produced with rule-based pre-annotation and per-record AI-assisted semantic review, including conflict review. AI participation is declared here at dataset level; records contain no added model, confidence, evidence, or review-status fields. These labels are not human gold or verified tool execution behavior. `unknown` means the declaration provides insufficient evidence. Sixteen records with known declaration parsing gaps have abstaining profiles. Declaration-quality subset names do not imply profile accuracy.
 
-## Intended Uses
+Profiles are for analysis and must not be supplied to an evaluated agent as tool-owned declarations. Before any execution experiment, independently verify the behavior of selected tools. See the [field dictionary](schema/field_dictionary.md) and [dataset card](DATASET_CARD.md).
 
-UTSR-ToolMeta can support:
+## Usage
 
-- cross-framework tool metadata analysis;
-- tool retrieval and candidate tool recall experiments;
-- tool selection and invocation planning evaluation;
-- parameter generation analysis;
-- construction of semantically competitive tool environments;
-- security research on model-visible tool metadata perturbations.
-
-## Quick Start
-
-Read a dataset file:
+Python 3.10 or newer is required. Reading, statistics, and file-hash verification use only the standard library. Full schema validation additionally requires `jsonschema`.
 
 ```bash
-python examples/read_dataset.py data/utsr_records.core_balanced.jsonl --limit 3
+pip install -r requirements.txt
+python examples/read_dataset.py releases/v0.2/data/utsr_records.core_balanced.jsonl --limit 3
+python scripts/verify_release.py releases/v0.2
+python scripts/validate_schema.py releases/v0.2/data/utsr_records.release_valid.jsonl
+python scripts/summarize_dataset.py releases/v0.2/data/utsr_records.release_valid.jsonl --out stats/v0.2
 ```
 
-Validate basic record integrity:
-
-```bash
-python scripts/check_record_integrity.py data/utsr_records.release_valid.jsonl
-```
-
-Generate statistics:
-
-```bash
-python scripts/summarize_dataset.py data/utsr_records.release_valid.jsonl --out stats
-```
-
-Build a simple competition pool:
-
-```bash
-python examples/build_competition_pool.py data/utsr_records.core_balanced.jsonl --record-id UTSR-MCP-000001 --top-k 8
-```
+Use [the version-local record schema](releases/v0.2/schema/utsr_record.schema.json). Original per-record schema-version metadata is preserved for traceability; package-level `VERSION.json` identifies the current distribution.
 
 ## Repository Layout
 
 ```text
-data/       Final release dataset files.
-schema/     JSON Schema and field dictionary.
-docs/       Construction, quality control, source, subset, and ethics notes.
-stats/      Dataset statistics and quality summaries.
-examples/   Minimal usage examples.
-scripts/    Validation and summarization utilities.
+releases/v0.2/data/    The three current JSONL subsets.
+releases/v0.2/schema/  Record and functional-profile schemas.
+releases/v0.2/         Version, statistics, README, and SHA-256 manifest.
+schema/               Field documentation.
+docs/                 Source, subset, quality, and responsible-use notes.
+scripts/              Dataset-reading support, validation, and statistics.
+examples/             Minimal reading example.
+tests/                Public utility tests.
 ```
 
-## Citation
+The public edition omits construction-only metadata, private work files, and internal review assets. Source identities, normalized tool semantics, record IDs, subset ordering, and functional labels are retained. It contains neither attack algorithms nor experiment configurations. Previous repository versions remain available in Git history.
 
-For the current internal draft, cite this repository. A final paper citation will be added when publication metadata is available. A `CITATION.cff` file is provided for GitHub citation metadata.
+## Citation and Terms
 
-## Notice
+Cite this repository and specify dataset version v0.2; see [CITATION.cff](CITATION.cff). No accompanying paper citation or archival DOI is claimed yet.
 
-This dataset contains normalized tool declaration metadata derived from public or research-oriented sources. It does not include raw construction files, tool backend code, private user data, or private execution credentials. Users are responsible for complying with applicable upstream licenses and terms of use. See [`DATA_LICENSE.md`](DATA_LICENSE.md) and [`NOTICE.md`](NOTICE.md).
+Code and documentation use the license in [LICENSE](LICENSE). Upstream-derived data remain subject to their respective terms; see [DATA_LICENSE.md](DATA_LICENSE.md) and [NOTICE.md](NOTICE.md). A source license marked unknown is not permission for unrestricted redistribution. Use only in authorized research environments. Report corrections with a record ID and source reference.

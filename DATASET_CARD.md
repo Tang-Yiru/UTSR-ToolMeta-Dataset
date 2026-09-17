@@ -1,84 +1,17 @@
-# Dataset Card: UTSR-ToolMeta
+# Dataset Card: UTSR-ToolMeta v0.2
 
-## Dataset Summary
+UTSR-ToolMeta normalizes LLM-agent tool declarations into UTSR for metadata analysis and tool-use research.
 
-UTSR-ToolMeta is a normalized dataset of LLM-Agent tool declarations. It maps heterogeneous tool metadata into the Unified Tool Semantic Representation (UTSR), including source information, tool identity, capability descriptions, input and output interfaces, and binding references.
+| Subset | Records |
+|---|---:|
+| release_valid | 7,593 |
+| high_confidence | 4,408 |
+| core_balanced | 2,000 |
 
-The dataset is designed for studying how model-visible tool declarations influence agent behavior, including candidate tool recall, tool selection, invocation planning, and parameter generation.
+Current files and schemas are in `releases/v0.2/`. Subsets overlap. The balanced core has 400 records per source family. Families are MCP, OpenAPI, framework tools, tool benchmarks, and function-calling datasets.
 
-## Dataset Composition
+Each record preserves source identity and a normalized UTSR declaration alongside a ten-field derived functional profile. Profiles cover domain, actions, direct effects, resource, cardinality, and intent. Rule-based annotation and AI-assisted per-record review were used; profiles are not human gold or proof of backend behavior. Unknown labels represent insufficient evidence. Known parsing-gap records retain abstaining profiles. AI involvement is declared at dataset level only.
 
-| Subset | Records | Description |
-|---|---:|---|
-| `release_valid` | 7,593 | Main valid release set after excluding hard-invalid records. |
-| `high_confidence` | 4,408 | Strict subset containing only `keep` records from the quality gate. |
-| `core_balanced` | 2,000 | Balanced subset with 400 records per source family. |
+Use for declaration analysis and controlled tool-use research. Do not expose profiles to evaluated agents as tool-owned declarations, infer backend safety from metadata, or execute third-party services without authorization and independent checks. This public edition excludes internal construction traces, reviews, and experiment methods.
 
-## Source Coverage
-
-The dataset includes records from:
-
-- MCP tool catalogs and MCP server tool declarations;
-- OpenAPI operation descriptions;
-- agent framework and tool-library integrations;
-- tool-use benchmark datasets;
-- function-calling datasets.
-
-## Fields
-
-Each record contains:
-
-- `record_id`: stable dataset identifier;
-- `dataset_meta`: dataset-level metadata;
-- `source_meta`: upstream source metadata;
-- `function_profile`: functional domain, subdomain, operation type, task intent, and semantic tags;
-- `utsr`: normalized tool semantic representation;
-- `provenance`: construction and parsing provenance.
-
-See `schema/field_dictionary.md` for detailed field definitions.
-
-## Quality Control
-
-The construction pipeline labels parsed candidates as:
-
-- `keep`: structurally and semantically strong records;
-- `review`: valid tool-semantic records with minor quality weaknesses;
-- `exclude`: hard-invalid records such as tests, mocks, dummy tools, low-value validation endpoints, or records missing core semantics.
-
-The public `release_valid` subset excludes `exclude` records and retains both `keep` and `review`. The `high_confidence` subset contains only `keep`.
-
-## Intended Use
-
-Recommended uses include:
-
-- tool metadata standardization research;
-- tool retrieval and reranking experiments;
-- tool selection robustness evaluation;
-- parameter generation evaluation;
-- construction of semantically competitive tool pools;
-- security analysis of model-visible tool declarations.
-
-## Out-of-Scope Use
-
-This dataset should not be used to:
-
-- claim that a tool backend is safe or unsafe based only on metadata;
-- execute third-party tools without independent review;
-- infer proprietary or private tool behavior;
-- deploy attacks against real systems.
-
-## Limitations
-
-- Some records originate from API or benchmark sources and may describe operations rather than directly executable local tools.
-- Output schemas and return descriptions are not available for all sources.
-- `function_profile` fields are generated or refined metadata and should be treated as analysis fields, not ground-truth tool behavior.
-- The dataset focuses on model-visible declarations, not tool implementation code.
-
-## Languages
-
-Most tool declarations are in English.
-
-## Maintenance
-
-Future versions may add additional source families, stronger schema validation, richer output descriptions, and task-level annotations for tool-use experiments.
-
+See [DATASHEET.md](DATASHEET.md), [the field dictionary](schema/field_dictionary.md), and [DATA_LICENSE.md](DATA_LICENSE.md). Source-derived rights remain with upstream providers; unknown licensing is not unrestricted permission. Paper and archival citation metadata will be added when available.

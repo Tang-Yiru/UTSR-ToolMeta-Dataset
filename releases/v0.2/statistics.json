@@ -1,0 +1,70 @@
+{
+  "action_mode_counts": {
+    "multi": 194,
+    "single": 7341,
+    "unknown": 58
+  },
+  "cardinality_counts": {
+    "batch": 342,
+    "collection": 1722,
+    "single": 4476,
+    "unknown": 1053
+  },
+  "effect_class_counts": {
+    "compute_only": 1890,
+    "external_side_effect": 209,
+    "mixed": 140,
+    "read_only": 3045,
+    "state_creating": 759,
+    "state_deleting": 434,
+    "state_modifying": 862,
+    "unknown": 254
+  },
+  "primary_domain_counts": {
+    "advertising": 633,
+    "analytics": 112,
+    "artificial_intelligence_machine_learning": 115,
+    "audio": 139,
+    "blockchain": 230,
+    "business": 551,
+    "cloud": 165,
+    "commerce": 116,
+    "communication": 376,
+    "computer_vision": 384,
+    "daily_life_services": 112,
+    "data_management": 224,
+    "design": 33,
+    "developer_tools": 732,
+    "document_processing": 31,
+    "documentation": 80,
+    "education": 47,
+    "file_system": 56,
+    "financial": 1061,
+    "geospatial": 22,
+    "healthcare": 4,
+    "human_interaction": 7,
+    "information_retrieval": 162,
+    "integration": 10,
+    "mcp_protocol": 60,
+    "multimedia": 200,
+    "multimodal": 286,
+    "natural_language_processing": 647,
+    "observability": 72,
+    "productivity": 159,
+    "science": 78,
+    "security": 185,
+    "telecom": 172,
+    "transport": 31,
+    "unknown": 34,
+    "web": 203,
+    "workflow": 64
+  },
+  "records": 7593,
+  "source_family": {
+    "framework_tool": 434,
+    "function_calling_dataset": 741,
+    "mcp": 3145,
+    "openapi": 1909,
+    "tool_benchmark": 1364
+  }
+}

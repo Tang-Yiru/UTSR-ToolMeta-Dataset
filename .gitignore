@@ -10,3 +10,11 @@ env/
 *.bak
 .ipynb_checkpoints/
 
+/reviews/
+/raw/
+/intermediate/
+/.deps/
+/local_archives/
+/releases/*
+!/releases/v0.2/
+

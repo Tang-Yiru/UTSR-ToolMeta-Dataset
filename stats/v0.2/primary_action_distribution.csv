@@ -1,0 +1,13 @@
+primary_action,count
+retrieve,1831
+transform,1766
+list,814
+update,772
+create,764
+delete,434
+search,367
+__null__,252
+execute,244
+interact,147
+transfer,120
+communicate,82

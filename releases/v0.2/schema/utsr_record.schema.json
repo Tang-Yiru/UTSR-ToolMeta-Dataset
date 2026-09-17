@@ -1,0 +1,539 @@
+{
+  "$id": "urn:utsr:toolmeta:record:v0.2:public",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "dataset_meta": {
+      "additionalProperties": true,
+      "properties": {
+        "created_at": {
+          "type": "string"
+        },
+        "dataset_name": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "source_record_uid": {
+          "type": "string"
+        },
+        "split": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "dataset_name",
+        "schema_version",
+        "created_at",
+        "language",
+        "split",
+        "source_record_uid"
+      ],
+      "type": "object"
+    },
+    "function_profile": {
+      "additionalProperties": false,
+      "description": "Functional profile for the v0.2 public dataset. Exactly ten semantic fields, without per-record annotation metadata. Unknown or null denotes insufficient evidence. Derived labels are not original tool declarations and must not be exposed to evaluated agents.",
+      "properties": {
+        "action_mode": {
+          "enum": [
+            "single",
+            "multi",
+            "unknown"
+          ]
+        },
+        "cardinality": {
+          "enum": [
+            "single",
+            "batch",
+            "collection",
+            "unknown"
+          ]
+        },
+        "effect_class": {
+          "enum": [
+            "read_only",
+            "compute_only",
+            "state_creating",
+            "state_modifying",
+            "state_deleting",
+            "external_side_effect",
+            "mixed",
+            "unknown"
+          ]
+        },
+        "primary_action": {
+          "description": "Single action class, or null for multi-action tools, unknown-action tools, and ambiguous multi-verb names.",
+          "enum": [
+            "search",
+            "list",
+            "retrieve",
+            "create",
+            "update",
+            "delete",
+            "execute",
+            "transform",
+            "communicate",
+            "transfer",
+            "interact",
+            null
+          ]
+        },
+        "primary_domain": {
+          "description": "Frozen 37-class L1 vocabulary; 'unknown' when evidence is insufficient.",
+          "enum": [
+            "advertising",
+            "analytics",
+            "artificial_intelligence_machine_learning",
+            "audio",
+            "blockchain",
+            "business",
+            "cloud",
+            "commerce",
+            "communication",
+            "computer_vision",
+            "daily_life_services",
+            "data_management",
+            "design",
+            "developer_tools",
+            "document_processing",
+            "documentation",
+            "education",
+            "file_system",
+            "financial",
+            "geospatial",
+            "healthcare",
+            "human_interaction",
+            "information_retrieval",
+            "integration",
+            "mcp_protocol",
+            "multimedia",
+            "multimodal",
+            "natural_language_processing",
+            "observability",
+            "productivity",
+            "science",
+            "security",
+            "telecom",
+            "transport",
+            "unknown",
+            "web",
+            "workflow"
+          ]
+        },
+        "primary_subdomain": {
+          "description": "null or lower_snake_case; must not duplicate primary_domain; null when unsupported.",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resource_object": {
+          "description": "Object phrase after removing action words and function words (<= 3 words); null when absent.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "secondary_domains": {
+          "description": "Auxiliary domain clues; unique, no unknown, never equal to primary_domain.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "supported_actions": {
+          "description": "All directly supported action classes detected in name and first-sentence description; ['unknown'] only when no action evidence exists.",
+          "items": {
+            "enum": [
+              "search",
+              "list",
+              "retrieve",
+              "create",
+              "update",
+              "delete",
+              "execute",
+              "transform",
+              "communicate",
+              "transfer",
+              "interact",
+              "unknown"
+            ]
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "task_intent": {
+          "additionalProperties": false,
+          "description": "Structured intent; canonical_text only in single-action mode with a clear object.",
+          "properties": {
+            "actions": {
+              "items": {
+                "enum": [
+                  "search",
+                  "list",
+                  "retrieve",
+                  "create",
+                  "update",
+                  "delete",
+                  "execute",
+                  "transform",
+                  "communicate",
+                  "transfer",
+                  "interact",
+                  "unknown"
+                ]
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "canonical_text": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "object": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "qualifiers": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "actions"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "primary_domain",
+        "primary_subdomain",
+        "secondary_domains",
+        "supported_actions",
+        "primary_action",
+        "action_mode",
+        "effect_class",
+        "resource_object",
+        "cardinality",
+        "task_intent"
+      ],
+      "title": "UTSR-ToolMeta functional profile (semantic fields only)",
+      "type": "object"
+    },
+    "provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "raw_descriptor_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "raw_descriptor_ref"
+      ],
+      "type": "object"
+    },
+    "record_id": {
+      "type": "string"
+    },
+    "source_meta": {
+      "additionalProperties": true,
+      "properties": {
+        "collection_method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "framework": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "license": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "priority": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_family": {
+          "type": "string"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "source_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "source_family",
+        "source_id"
+      ],
+      "type": "object"
+    },
+    "utsr": {
+      "additionalProperties": false,
+      "properties": {
+        "binding": {
+          "additionalProperties": false,
+          "properties": {
+            "executor_ref": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw_descriptor_ref": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "serializer_target": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "executor_ref",
+            "serializer_target",
+            "raw_descriptor_ref"
+          ],
+          "type": "object"
+        },
+        "capability": {
+          "additionalProperties": false,
+          "properties": {
+            "description": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "return_description": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "summary": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "description",
+            "summary",
+            "return_description"
+          ],
+          "type": "object"
+        },
+        "identity": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "namespace": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "name",
+            "namespace"
+          ],
+          "type": "object"
+        },
+        "interface": {
+          "additionalProperties": false,
+          "properties": {
+            "input_schema": {
+              "description": "Canonical structured invocation schema when available.",
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "output_schema": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "output_type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "parameters": {
+              "items": {
+                "additionalProperties": true,
+                "properties": {
+                  "default": true,
+                  "description": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "enum": {
+                    "type": [
+                      "array",
+                      "null"
+                    ]
+                  },
+                  "name": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "required": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "type": {
+                    "oneOf": [
+                      {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      {
+                        "items": {
+                          "enum": [
+                            "string",
+                            "number",
+                            "integer",
+                            "boolean",
+                            "object",
+                            "array",
+                            "null"
+                          ]
+                        },
+                        "minItems": 1,
+                        "type": "array",
+                        "uniqueItems": true
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "type",
+                  "required",
+                  "description"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "input_schema",
+            "parameters",
+            "output_schema",
+            "output_type"
+          ],
+          "type": "object"
+        },
+        "source": {
+          "additionalProperties": false,
+          "properties": {
+            "framework": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "upstream_channel": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "upstream_type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "usage_context": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "framework",
+            "upstream_type",
+            "upstream_channel",
+            "usage_context"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "source",
+        "identity",
+        "capability",
+        "interface",
+        "binding"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "record_id",
+    "dataset_meta",
+    "source_meta",
+    "function_profile",
+    "utsr",
+    "provenance"
+  ],
+  "title": "UTSR-ToolMeta v0.2 public record",
+  "type": "object"
+}

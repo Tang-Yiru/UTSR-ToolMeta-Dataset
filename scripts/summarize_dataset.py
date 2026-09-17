@@ -31,31 +31,41 @@ def summarize(records: list[dict[str, Any]]) -> dict[str, Any]:
     source_family = Counter()
     domain = Counter()
     subdomain = Counter()
-    function_type = Counter()
-    profile_origin = Counter()
+    primary_action = Counter()
+    supported_actions = Counter()
+    action_mode = Counter()
+    effect_class = Counter()
+    cardinality = Counter()
     task_intents = set()
 
     for record in records:
         source_family[record["source_meta"].get("source_family", "unknown")] += 1
         profile = record["function_profile"]
-        domain[profile.get("domain", "unknown")] += 1
-        subdomain[profile.get("subdomain", "unknown")] += 1
-        function_type[profile.get("function_type", "unknown")] += 1
-        profile_origin[profile.get("profile_origin", "unknown")] += 1
+        domain[profile.get("primary_domain", "unknown")] += 1
+        subdomain[profile.get("primary_subdomain") or "__null__"] += 1
+        primary_action[profile.get("primary_action") or "__null__"] += 1
+        supported_actions.update(profile.get("supported_actions", ["unknown"]))
+        action_mode[profile.get("action_mode", "unknown")] += 1
+        effect_class[profile.get("effect_class", "unknown")] += 1
+        cardinality[profile.get("cardinality", "unknown")] += 1
         intent = profile.get("task_intent")
         if intent:
-            task_intents.add(intent)
+            task_intents.add(json.dumps(intent, sort_keys=True, ensure_ascii=False))
 
     return {
         "records": len(records),
         "source_family": dict(source_family.most_common()),
         "domain_unique": len(domain),
         "subdomain_unique": len(subdomain),
-        "function_type_unique": len(function_type),
         "task_intent_unique": len(task_intents),
         "top_domains": dict(domain.most_common(20)),
-        "function_type": dict(function_type.most_common()),
-        "profile_origin": dict(profile_origin.most_common()),
+        "primary_domain_counts": dict(domain.most_common()),
+        "primary_subdomain_counts": dict(subdomain.most_common()),
+        "primary_action_counts": dict(primary_action.most_common()),
+        "supported_action_counts": dict(supported_actions.most_common()),
+        "action_mode_counts": dict(action_mode.most_common()),
+        "effect_class_counts": dict(effect_class.most_common()),
+        "cardinality_counts": dict(cardinality.most_common()),
     }
 
 
@@ -74,19 +84,13 @@ def main() -> None:
         encoding="utf-8",
     )
 
-    source_family = Counter(r["source_meta"].get("source_family", "unknown") for r in records)
-    domain = Counter(r["function_profile"].get("domain", "unknown") for r in records)
-    subdomain = Counter(r["function_profile"].get("subdomain", "unknown") for r in records)
-    function_type = Counter(r["function_profile"].get("function_type", "unknown") for r in records)
-
-    write_counter_csv(args.out / "source_distribution.csv", "source_family", source_family)
-    write_counter_csv(args.out / "domain_distribution.csv", "domain", domain)
-    write_counter_csv(args.out / "subdomain_distribution.csv", "subdomain", subdomain)
-    write_counter_csv(args.out / "function_type_distribution.csv", "function_type", function_type)
+    for field in ("source_family", "primary_domain", "primary_subdomain", "primary_action",
+                  "supported_action", "action_mode", "effect_class", "cardinality"):
+        values = summary[field if field == "source_family" else field + "_counts"]
+        write_counter_csv(args.out / f"{field}_distribution.csv", field, Counter(values))
 
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
     main()
-

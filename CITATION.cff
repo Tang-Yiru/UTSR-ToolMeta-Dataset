@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 title: UTSR-ToolMeta Dataset
-message: "For the current internal draft, cite this repository. A final paper citation will be added when publication metadata is available."
+message: "Cite this dataset repository and specify version v0.2. Paper metadata will be added when available."
 type: dataset
 authors:
   - name: UTSR-ToolMeta contributors
@@ -12,5 +12,5 @@ keywords:
   - tool metadata
   - UTSR
   - security
-version: 0.1.0
-date-released: 2026-06-12
+version: 0.2
+date-released: 2026-09-17

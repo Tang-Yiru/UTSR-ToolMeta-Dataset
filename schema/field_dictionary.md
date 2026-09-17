@@ -1,114 +1,49 @@
-# Field Dictionary
+# UTSR-ToolMeta v0.2 Field Dictionary
 
-Each JSONL line is one UTSR-ToolMeta record. The dataset keeps UTSR as the central normalized representation and adds dataset-level metadata, source metadata, functional profile fields, and provenance fields around it.
+Use `releases/v0.2/schema/utsr_record.schema.json` for the public record schema.
 
-## Top-Level Fields
+## Record Fields
 
-| Field | Type | Nullable | Description |
-|---|---|---:|---|
-| `record_id` | string | no | Stable unique identifier for the normalized record. The prefix reflects the dataset/source split, such as `UTSR-MCP-000001`. |
-| `dataset_meta` | object | no | Dataset management metadata, including dataset name, schema version, split, language, and construction date. |
-| `source_meta` | object | no | Upstream source metadata, including source family, source identifier, URL, version, license, and collection method. |
-| `function_profile` | object | no | Generated functional profile used for grouping, filtering, and experiment construction. |
-| `utsr` | object | no | Unified Tool Semantic Representation, the normalized core representation of model-visible tool declarations. |
-| `provenance` | object | no | Parsing and traceability metadata for reproducing how the record was constructed. |
+| Field | Meaning |
+|---|---|
+| `record_id` | Stable record identifier. |
+| `dataset_meta` | Original dataset name, creation date, language, split, schema metadata, and source UID. |
+| `source_meta` | Upstream source family, ID, URL, version, license metadata, framework, and collection metadata. |
+| `function_profile` | Derived semantic labels, described below. |
+| `utsr` | Normalized declaration, described below. |
+| `provenance.raw_descriptor_ref` | Upstream descriptor reference; the raw files are not bundled. |
 
-## `dataset_meta`
+Original per-record metadata are retained; package `VERSION.json` identifies the public distribution. Construction-only parser candidates and local work traces are not included.
 
-| Field | Type | Nullable | Description |
-|---|---|---:|---|
-| `dataset_name` | string | no | Dataset name, expected to be `UTSR-ToolMeta`. |
-| `schema_version` | string | no | Version of the dataset schema. |
-| `created_at` | string | no | Date when the record version was created. |
-| `language` | string | no | Primary language of the tool declaration. |
-| `split` | string | no | Source split or source-family label used in record identifiers. |
-| `source_record_uid` | string | no | Stable hash or identifier for the parsed source record. |
+## Functional Profile
 
-## `source_meta`
+| Field | Type | Meaning |
+|---|---|---|
+| `primary_domain` | string | Primary L1 domain from the 37-value vocabulary, including `unknown`. |
+| `primary_subdomain` | string or null | Lower-snake-case descriptive subdomain, not a closed vocabulary. |
+| `secondary_domains` | array of strings | Additional supported domains; unique, without `unknown` or the primary domain. |
+| `supported_actions` | array of strings | Nonempty unique direct actions. `unknown` may occur only alone. |
+| `primary_action` | string or null | Main supported action when evidence establishes one. |
+| `action_mode` | string | `single`, `multi`, or `unknown`. |
+| `effect_class` | string | `read_only`, `compute_only`, `state_creating`, `state_modifying`, `state_deleting`, `external_side_effect`, `mixed`, or `unknown`. |
+| `resource_object` | string or null | Logical object acted upon or produced. |
+| `cardinality` | string | `single`, `collection`, `batch`, or `unknown`. |
+| `task_intent` | object | `actions`, `object`, `qualifiers`, and nullable `canonical_text`. |
 
-| Field | Type | Nullable | Description |
-|---|---|---:|---|
-| `source_family` | string | no | High-level source family, such as `mcp`, `openapi`, `framework_tool`, `tool_benchmark`, or `function_calling_dataset`. |
-| `source_id` | string | no | Internal identifier of the upstream source. |
-| `source_url` | string | yes | URL of the upstream source when available. |
-| `source_version` | string | yes | Snapshot date, commit, release, or version identifier. |
-| `license` | string | yes | Upstream license string when available. |
-| `framework` | string | yes | Framework or protocol environment associated with the source. |
-| `priority` | string | yes | Internal priority level used during source selection. |
-| `collection_method` | string | yes | Method used to collect the upstream data, such as repository clone, dataset import, or API specification import. |
+The action vocabulary is `search`, `list`, `retrieve`, `create`, `update`, `delete`, `execute`, `transform`, `communicate`, `transfer`, `interact`, and `unknown`. Intent actions and object match the profile's supported actions and resource object.
 
-## `function_profile`
+AI-assisted derived profiles contain only these ten semantic fields. They are not original declarations, human gold, or verified backend behavior. Do not pass them to evaluated agents as tool metadata.
 
-| Field | Type | Nullable | Description |
-|---|---|---:|---|
-| `domain` | string | no | Coarse functional domain, such as `information_retrieval`, `financial`, `developer_tools`, or `data_management`. |
-| `subdomain` | string | no | Fine-grained functional category within the domain. |
-| `function_type` | string | no | Operation type, such as `retrieve`, `search_or_list`, `create_or_write`, `modify`, or `delete_or_destructive`. |
-| `task_intent` | string | no | Concise natural-language description of the task the tool is intended to support. |
-| `semantic_tags` | array[string] | no | Lightweight semantic tags for filtering and grouping. |
-| `profile_origin` | string | no | Origin of the functional profile, such as rule-generated or rule-generated with assisted refinement. |
+## UTSR Declaration
 
-## `utsr.source`
+| Group | Fields |
+|---|---|
+| `source` | Framework, upstream type/channel, and usage context. |
+| `identity` | Name and optional namespace. |
+| `capability` | Primary description, optional summary, and return description. |
+| `interface` | Input schema, flat parameters, output schema, and output type. |
+| `binding` | Executor reference, serializer target, and raw descriptor reference. |
 
-| Field | Type | Nullable | Description |
-|---|---|---:|---|
-| `framework` | string | yes | Framework or protocol into which the tool declaration can be loaded. |
-| `upstream_type` | string | yes | Type of upstream semantic carrier, such as MCP tool, OpenAPI operation, function declaration, or framework tool. |
-| `upstream_channel` | string | yes | Collection channel or upstream representation category. |
-| `usage_context` | string | yes | Expected use context in an agent system, such as runtime tool, benchmark tool, or API-operation candidate. |
-| `field_origin_map` | object | no | Mapping from UTSR fields to original fields or generated sources. |
+`input_schema` is the authoritative structured interface when trustworthy. Flat `parameters` preserve compatibility and source inspection; they must not be interpreted as an equivalent second invocation schema. Parameter names, types, requiredness, descriptions, defaults, and enums are preserved, including existing primitive/null type unions.
 
-## `utsr.identity`
-
-| Field | Type | Nullable | Description |
-|---|---|---:|---|
-| `name` | string | no | Model-visible tool or function name. |
-| `namespace` | string | yes | Namespace, plugin, package, MCP server, or tool collection name. |
-
-## `utsr.capability`
-
-| Field | Type | Nullable | Description |
-|---|---|---:|---|
-| `description` | string | no | Natural-language description of the tool capability, usage scenario, and capability boundary. |
-| `summary` | string | yes | Short capability summary when available or generated. |
-| `return_description` | string | yes | Natural-language description of the expected return value or output. |
-
-## `utsr.interface`
-
-| Field | Type | Nullable | Description |
-|---|---|---:|---|
-| `input_schema` | object | yes | Structured input schema when available. |
-| `parameters` | array[object] | no | Normalized list of input parameters. |
-| `output_schema` | object | yes | Structured output schema when available. |
-| `output_type` | string | yes | Coarse output type, such as `object`, `array`, `string`, `number`, `boolean`, `file`, `image`, or `text`. |
-
-## `utsr.interface.parameters[]`
-
-| Field | Type | Nullable | Description |
-|---|---|---:|---|
-| `name` | string | no | Parameter name. |
-| `type` | string | yes | Parameter type. |
-| `required` | boolean | yes | Whether the parameter is required. |
-| `description` | string | yes | Natural-language parameter description. |
-| `default` | any | yes | Default value when available. |
-| `enum` | array | yes | Enumerated values when available. |
-
-## `utsr.binding`
-
-| Field | Type | Nullable | Description |
-|---|---|---:|---|
-| `executor_ref` | string | yes | Stable reference to the executable entity, such as function signature, MCP server and tool name, endpoint, or plugin function path. |
-| `serializer_target` | string | yes | Target framework or protocol format for serialization. |
-| `raw_descriptor_ref` | string | yes | Reference to the raw upstream descriptor used for normalization. |
-
-## `provenance`
-
-| Field | Type | Nullable | Description |
-|---|---|---:|---|
-| `raw_dir` | string | yes | Local raw source directory used during construction. |
-| `raw_descriptor_ref` | string | yes | Raw descriptor reference. |
-| `parser` | string | yes | Parser class or parser module that produced the record. |
-| `parser_version` | string | yes | Parser version. |
-| `parse_time_utc` | string | yes | UTC timestamp of parsing. |
-| `candidate` | object | yes | Intermediate parsed candidate used to construct the UTSR record. |
-
+Missing optional information remains null or empty rather than being invented. A non-null input schema is not proof of validated execution compatibility. Bindings are references, not bundled implementations or credentials. Source text may contain illustrative values; those are not authorization to access a service.

@@ -1,0 +1,14 @@
+{
+  "date": "2026-09-17",
+  "edition": "public",
+  "format": "jsonl",
+  "human_gold": false,
+  "privacy_note": "Construction-only metadata is omitted. Tool semantics and functional profiles are preserved.",
+  "record_schema": "schema/utsr_record.schema.json",
+  "subsets": {
+    "core_balanced": 2000,
+    "high_confidence": 4408,
+    "release_valid": 7593
+  },
+  "version": "v0.2"
+}

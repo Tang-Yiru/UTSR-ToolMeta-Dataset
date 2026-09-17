@@ -1,66 +1,23 @@
-# Datasheet for UTSR-ToolMeta
+# Datasheet for UTSR-ToolMeta v0.2
 
-## Motivation
+## Purpose and Composition
 
-UTSR-ToolMeta was created to support systematic research on model-visible tool declarations in LLM-Agent systems. Existing tool descriptions are distributed across frameworks, protocols, tool libraries, API specifications, and benchmark datasets. This dataset normalizes such heterogeneous metadata into UTSR so that tool semantics can be compared, filtered, perturbed, and evaluated across sources.
+UTSR-ToolMeta supports research on standardized LLM-agent tool declarations. It represents source information, identity, capability descriptions, interfaces, and binding references from five source families. Records are declaration-level metadata, not executable backend implementations.
 
-## Composition
+The main set contains 7,593 records. Its inherited declaration-quality subset contains 4,408 records; its source-balanced subset contains 2,000 records with 400 per family. The subsets overlap and retain stable identifiers. Duplicate declarations are not deleted.
 
-Each record represents one model-visible tool declaration or tool-like operation. A record contains normalized metadata for source, identity, capability, interface, binding, functional profile, and provenance.
+## Annotation
 
-The release contains three subsets:
+The ten-field `function_profile` is derived using rule-based pre-annotation and AI-assisted per-record semantic review with conflict review. It is not human gold. No per-record AI provenance, confidence, or review metadata is added. `unknown` indicates insufficient declaration evidence; sixteen known parsing-gap records retain abstaining profiles.
 
-- `release_valid`: the main valid release set;
-- `high_confidence`: a stricter subset containing only high-confidence records;
-- `core_balanced`: a source-balanced subset for experiments.
-
-## Collection Process
-
-The construction process contains four stages:
-
-1. Source discovery and raw collection from public tool metadata repositories, framework-integrated tools, MCP catalogs, OpenAPI operation descriptions, and tool-use datasets.
-2. Source-specific parsing into candidate tool records.
-3. Mapping candidate records into the UTSR schema.
-4. Functional profiling, quality gating, and subset construction.
-
-Raw source files are not included in this release repository. The release focuses on normalized dataset records, schema documentation, statistics, and usage scripts.
-
-## Preprocessing and Cleaning
-
-The pipeline removes or excludes records that are likely to be tests, mocks, dummy records, validation-only endpoints, or records missing core semantics. Valid but imperfect records are retained in `release_valid` and documented through quality-control summaries.
-
-## Labeling and Annotation
-
-The dataset includes generated functional profiles:
-
-- `domain`;
-- `subdomain`;
-- `function_type`;
-- `task_intent`;
-- `semantic_tags`.
-
-These fields are produced by rule-based extraction and refinement procedures. They are intended to support grouping and experiment construction rather than to serve as authoritative labels of tool behavior.
-
-## Uses
-
-The dataset is suitable for research on:
-
-- unified tool semantic representation;
-- candidate tool recall and retrieval;
-- tool selection and planning;
-- parameter generation;
-- robustness and security of tool metadata;
-- semantically competitive tool environment construction.
+Functional labels describe the current call's actions, resource, effects, and cardinality. They must not be presented to an evaluated agent as original tool metadata. Selected tool behaviors require independent verification before execution.
 
 ## Distribution
 
-The dataset is distributed as JSONL files. Each line is a single record.
+Files are JSONL under `releases/v0.2/data/`, with schemas, statistics, version information, and an integrity manifest in the same version directory. Source metadata and descriptor references are retained; construction traces, parser candidates, internal reviews, private work files, and experiment methods are excluded. Public utilities support reading, validation, and summary statistics, not reconstruction of the private research workspace.
 
-## Ethical Considerations
+## Limitations and Responsible Use
 
-The dataset can be used for security research on perturbing tool metadata. Researchers should use it in controlled experimental environments and avoid applying perturbation methods to real tool registries or production agent systems without authorization.
+Some declarations are API operations or benchmark descriptions rather than immediately executable tools. Input and output specifications are incomplete for some sources. Profiles reflect declaration evidence, not measured execution behavior or independently established label accuracy. Subset names refer to declaration quality, not human-gold labels.
 
-## Limitations
-
-The dataset does not include tool backend source code, execution credentials, runtime traces, or private user data. It primarily represents static tool declarations and cannot alone determine actual backend behavior.
-
+No backend code, private service credentials, or private user conversations are included. Upstream example strings can remain in source declarations and should not be used as real credentials. Follow source-specific licenses and terms. Conduct security research only in authorized controlled environments.

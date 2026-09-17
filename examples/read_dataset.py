@@ -31,9 +31,11 @@ def main() -> None:
             "name": utsr["identity"].get("name"),
             "namespace": utsr["identity"].get("namespace"),
             "description": utsr["capability"].get("description"),
-            "domain": profile.get("domain"),
-            "subdomain": profile.get("subdomain"),
-            "function_type": profile.get("function_type"),
+            "primary_domain": profile.get("primary_domain"),
+            "primary_subdomain": profile.get("primary_subdomain"),
+            "supported_actions": profile.get("supported_actions"),
+            "effect_class": profile.get("effect_class"),
+            "cardinality": profile.get("cardinality"),
             "task_intent": profile.get("task_intent"),
         }
         print(json.dumps(compact, ensure_ascii=False, indent=2))
@@ -43,4 +45,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

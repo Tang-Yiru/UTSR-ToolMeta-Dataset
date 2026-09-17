@@ -1,38 +1,13 @@
-# Subset Definition
+# Dataset Subsets
 
-UTSR-ToolMeta provides three public release subsets.
+All current subsets are in `releases/v0.2/data/`.
 
-## `release_valid`
+| Subset | Records | Meaning |
+|---|---:|---|
+| `release_valid` | 7,593 | Full valid declaration set. |
+| `high_confidence` | 4,408 | Inherited declaration-quality subset. |
+| `core_balanced` | 2,000 | Source-balanced subset with 400 records per family. |
 
-`release_valid` is the main release set. It is constructed by removing hard-invalid `exclude` records from the parsed candidate pool while retaining both `keep` and `review` records.
+The five families are `mcp`, `openapi`, `framework_tool`, `tool_benchmark`, and `function_calling_dataset`. Subsets overlap and are not independent additional records. Stable IDs allow joins to the main set. Identical IDs have identical public records across subsets; each subset retains its own ordering.
 
-Use this subset when broad source coverage is important.
-
-## `high_confidence`
-
-`high_confidence` contains only records that passed the quality gate as `keep`.
-
-Use this subset when precision and metadata completeness matter more than broad coverage.
-
-## `core_balanced`
-
-`core_balanced` is sampled from `release_valid`. It contains 2,000 records, with 400 records from each source family:
-
-- `mcp`;
-- `openapi`;
-- `framework_tool`;
-- `tool_benchmark`;
-- `function_calling_dataset`.
-
-Use this subset for experiments where source balance is important.
-
-## Relationship
-
-```text
-parsed candidates
-  -> quality-labeled candidates
-  -> release_valid = keep + review
-  -> high_confidence = keep
-  -> core_balanced = balanced sample from release_valid
-```
-
+Subset membership does not imply human-gold profile accuracy, executable compatibility, or authorization to access a third-party service.

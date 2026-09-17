@@ -1,0 +1,9 @@
+effect_class,count
+read_only,3045
+compute_only,1890
+state_modifying,862
+state_creating,759
+state_deleting,434
+unknown,254
+external_side_effect,209
+mixed,140

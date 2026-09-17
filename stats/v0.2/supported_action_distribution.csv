@@ -1,0 +1,13 @@
+supported_action,count
+retrieve,1899
+transform,1799
+create,865
+list,860
+update,859
+delete,475
+search,398
+execute,263
+interact,157
+transfer,143
+communicate,89
+unknown,58

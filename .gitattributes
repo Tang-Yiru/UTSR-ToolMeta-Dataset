@@ -6,3 +6,6 @@
 *.csv text eol=lf
 *.cff text eol=lf
 
+# Versioned file manifests bind exact bytes across platforms.
+releases/v0.2/** -text
+
