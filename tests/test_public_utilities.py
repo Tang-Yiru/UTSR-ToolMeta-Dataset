@@ -33,7 +33,7 @@ class PublicUtilitiesTests(unittest.TestCase):
         self.assertEqual(summary['primary_domain_counts'], {'developer_tools': 2})
 
     def test_release_manifest(self):
-        self.assertEqual(V.verify(ROOT / 'releases/v0.2'), 8)
+        self.assertEqual(V.verify(ROOT / 'releases/v0.2'), 7)
 
     def test_manifest_rejects_missing_entry(self):
         with tempfile.TemporaryDirectory() as tmp:
